@@ -1,0 +1,26 @@
+
+p.solid {
+    border-style: solid;
+    padding: 20px;
+}
+
+div.border-success {
+    border-style: solid;
+    border-width: medium;
+    padding: 10px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.row {
+    padding-top: 10px;
+}
