@@ -6,12 +6,12 @@ import com.example.demo.service.RandomService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 @Controller
@@ -30,22 +30,20 @@ public class CalendarController {
 
     @PostConstruct
     void init() {
-        restaurants.getEvents().add(new Event("cơm gà", LocalDate.now().minusDays(1).toString(), null));
+        restaurants.getEvents().add(new Event("Cơm gà", randomService.getDateFromNow(-1), null));
+        restaurants.getEvents().add(new Event("Cơm phần 1", randomService.getDateFromNow(0), null));
     }
 
     @PostMapping("/update")
-    String toUpdatePage(Model model) {
-        String today = LocalDate.now().toString();
+    String toUpdatePage() {
+        String today = randomService.getDateFromNow(0);
         LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
-        if (restaurants.getEvents().isEmpty()) {
-            events.addLast(new Event(randomService.getRandomRestaurant(), LocalDate.now().toString(), null));
+        String toDayTitle = events.getLast().getTitle();
+        if (!events.getLast().getStart().equals(today)) {
+            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
         } else {
-            String toDayReg = events.getLast().getStart();
-            if (today.equals(toDayReg)) {
-                events.getLast().setTitle(randomService.getRandomRestaurant());
-            } else {
-                events.addLast(new Event(randomService.getRandomRestaurant(), LocalDate.now().toString(), null));
-            }
+            String yesterdayTitle = events.get(events.size() - 2).getTitle();
+            events.getLast().setTitle(randomService.getRandomRestaurant(toDayTitle, yesterdayTitle));
         }
         return "redirect:/";
     }
