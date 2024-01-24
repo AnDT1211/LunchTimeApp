@@ -1,15 +1,14 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
+import com.example.demo.model.Event;
 import com.example.demo.model.Restaurants;
+import com.example.demo.service.RandomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +22,11 @@ public class RestWebController {
     @Autowired
     Restaurants restaurants;
 
+    @Autowired
+    RandomService randomService;
+
     @GetMapping(value = "/all")
     public String getEvents() {
-
         String jsonMsg = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -36,6 +37,32 @@ public class RestWebController {
         }
         return jsonMsg;
     }
+
+    @PostMapping("/update")
+    String updateForToDay() {
+        String today = randomService.getDateFromNow(0);
+        LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
+        String toDayTitle = events.getLast().getTitle();
+        if (!events.getLast().getStart().equals(today)) {
+            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
+        }
+        return getEvents();
+    }
+
+    @PostMapping("/update/sandbox")
+    String updateSandbox() {
+        String today = randomService.getDateFromNow(0);
+        LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
+        String toDayTitle = events.getLast().getTitle();
+        if (!events.getLast().getStart().equals(today)) {
+            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
+        } else {
+            String yesterdayTitle = events.get(events.size() - 2).getTitle();
+            events.getLast().setTitle(randomService.getRandomRestaurant(toDayTitle, yesterdayTitle));
+        }
+        return getEvents();
+    }
+
 
     @GetMapping("/track")
     public String getTracking() {

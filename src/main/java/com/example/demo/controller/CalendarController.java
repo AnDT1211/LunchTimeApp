@@ -28,29 +28,16 @@ public class CalendarController {
         return "index";
     }
 
+    @GetMapping(path = {"/sandbox"})
+    String mainPage() {
+        return "sandbox";
+    }
+
     @PostConstruct
     void init() {
-        restaurants.getEvents().add(new Event("Cơm gà", randomService.getDateFromNow(-1), null));
-        restaurants.getEvents().add(new Event("Cơm phần 1", randomService.getDateFromNow(0), null));
+        restaurants.getEvents().add(new Event("Cơm gà", randomService.getDateFromNow(-2), null));
+        restaurants.getEvents().add(new Event("Cơm phần 1", randomService.getDateFromNow(-1), null));
+        restaurants.getEvents().add(new Event("Bún bò", randomService.getDateFromNow(0), null));
     }
 
-    @PostMapping("/update")
-    String toUpdatePage() {
-        String today = randomService.getDateFromNow(0);
-        LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
-        String toDayTitle = events.getLast().getTitle();
-        if (!events.getLast().getStart().equals(today)) {
-            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
-        } else {
-            String yesterdayTitle = events.get(events.size() - 2).getTitle();
-            events.getLast().setTitle(randomService.getRandomRestaurant(toDayTitle, yesterdayTitle));
-        }
-        return "redirect:/";
-    }
-
-    @GetMapping("/todaytest")
-    @ResponseBody
-    String todaytest() {
-        return LocalDate.now().toString();
-    }
 }

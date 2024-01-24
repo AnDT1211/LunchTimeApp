@@ -17,13 +17,10 @@ public class RandomService {
     }
 
     public String getRandomRestaurant(String toDayTitle, String yesterdayTitle) {
-        System.out.println(toDayTitle);
-        System.out.println(yesterdayTitle);
         List<String> keys = Collections.list(resourceBundle.getKeys());
         int size = resourceBundle.keySet().size();
         int idRes = new Random().nextInt(size);
         String newTitle = resourceBundle.getString(keys.get(idRes));
-        System.out.println("new " + newTitle);
 
         while (Objects.equals(newTitle, toDayTitle) || Objects.equals(newTitle, yesterdayTitle)) {
             idRes = new Random().nextInt(size);

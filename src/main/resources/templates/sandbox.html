@@ -30,7 +30,7 @@
         });
 
         function updateCalendar() {
-            $.post('/api/event/update').done(function() {
+            $.post('/api/event/update/sandbox').done(function() {
                 $('#calendar').fullCalendar('refetchEvents');
             });
         }
