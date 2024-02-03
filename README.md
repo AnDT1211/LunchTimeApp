@@ -8,6 +8,7 @@ add version 2:
 - add ajax
 - add feature 1 random per day
 - add sandbox page (/sandbox)
+- add notion query instead of local save
 
 ### link production
 
@@ -19,10 +20,10 @@ add version 2:
 ![img.png](img/img2.png)
 
 ### using note
-- update list of restaurants in `listrestaurant.properties`
+- ~~update list of restaurants in `listrestaurant.properties`~~
+- đã update db dùng notion.so
 
 ### update soon
-
 - add CRUD to update restaurant
 - better UI experience
 

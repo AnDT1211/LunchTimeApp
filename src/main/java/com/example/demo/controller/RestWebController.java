@@ -1,11 +1,14 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.time.LocalDate;
+import java.util.List;
 
 import com.example.demo.model.Event;
 import com.example.demo.model.Restaurants;
-import com.example.demo.service.RandomService;
+import com.example.demo.model.dto.LunchDto;
+import com.example.demo.service.LunchServiceImpl;
+import com.example.demo.service.RestaurantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,49 +26,47 @@ public class RestWebController {
     Restaurants restaurants;
 
     @Autowired
-    RandomService randomService;
+    RestaurantServiceImpl restaurantService;
+
+    @Autowired
+    LunchServiceImpl lunchService;
 
     @GetMapping(value = "/all")
     public String getEvents() {
         String jsonMsg = null;
         try {
+            List<LunchDto> lunchDtos = lunchService.getAllLunchFromDate(LocalDate.now().minusMonths(3).toString());
+            List<Event> events = lunchDtos.stream().map(x -> new Event(x.getName(), x.getPickDate().toString(), null)).toList();
+
             ObjectMapper mapper = new ObjectMapper();
-            jsonMsg =  mapper.writerWithDefaultPrettyPrinter().writeValueAsString(restaurants.getEvents());
+            jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
 
         } catch (IOException ioex) {
             System.out.println(ioex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return jsonMsg;
     }
 
     @PostMapping("/update")
     String updateForToDay() {
-        String today = randomService.getDateFromNow(0);
-        LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
-        String toDayTitle = events.getLast().getTitle();
-        if (!events.getLast().getStart().equals(today)) {
-            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
+        try {
+            lunchService.registerLunchDate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return getEvents();
     }
 
     @PostMapping("/update/sandbox")
     String updateSandbox() {
-        String today = randomService.getDateFromNow(0);
-        LinkedList<Event> events = ((LinkedList<Event>) restaurants.getEvents());
-        String toDayTitle = events.getLast().getTitle();
-        if (!events.getLast().getStart().equals(today)) {
-            events.addLast(new Event(randomService.getRandomRestaurant(toDayTitle, null), today, null));
-        } else {
-            String yesterdayTitle = events.get(events.size() - 2).getTitle();
-            events.getLast().setTitle(randomService.getRandomRestaurant(toDayTitle, yesterdayTitle));
+        try {
+            lunchService.registerLunchDateSandbox();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return getEvents();
-    }
-
-
-    @GetMapping("/track")
-    public String getTracking() {
-        return restaurants.toString();
     }
 }
