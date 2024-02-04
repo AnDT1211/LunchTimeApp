@@ -13,4 +13,6 @@ public class PropertiesRestaurant{
     public Address address;
     @JsonProperty("Name")
     public Name name;
+    @JsonProperty("Color")
+    public Color color;
 }

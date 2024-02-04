@@ -36,10 +36,12 @@ public class RestWebController {
         String jsonMsg = null;
         try {
             List<LunchDto> lunchDtos = lunchService.getAllLunchFromDate(LocalDate.now().minusMonths(3).toString());
-            List<Event> events = lunchDtos.stream().map(x -> new Event(x.getName(), x.getPickDate().toString(), null)).toList();
+            List<Event> events = lunchDtos.stream().map(x -> new Event(x.getName(), x.getPickDate().toString(), null,
+                    x.getRestaurant().getColor())).toList();
 
             ObjectMapper mapper = new ObjectMapper();
             jsonMsg = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
+            System.out.println(jsonMsg);
 
         } catch (IOException ioex) {
             System.out.println(ioex.getMessage());

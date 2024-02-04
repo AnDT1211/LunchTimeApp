@@ -23,6 +23,6 @@ public class RootRestaurants{
 
     public List<RestaurantDto> getAllRestaurantsDto() {
         return results.stream().map(x -> new RestaurantDto(x.properties.name.title.get(0).text.content
-                , x.id, x.properties.address.rich_text.get(0).text.content)).toList();
+                , x.id, x.properties.address.rich_text.get(0).text.content, x.properties.color.select.name)).toList();
     }
 }

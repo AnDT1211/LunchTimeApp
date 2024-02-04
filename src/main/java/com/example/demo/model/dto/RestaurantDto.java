@@ -11,6 +11,7 @@ public class RestaurantDto implements Comparable<RestaurantDto> {
     private String name;
     private String idDb;
     private String address;
+    private String color;
 
     @Override
     public int compareTo(RestaurantDto o) {
